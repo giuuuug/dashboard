@@ -34,7 +34,10 @@
 /* USER CODE BEGIN Includes */
 #include "bsp.h"
 #include "dashboard.h"
+#include "ili9488.h"
+#include "lvgl.h"
 #include "pca9555.h"
+#include "screen_loader.h"
 
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -46,6 +49,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define BYTES_PER_PIXEL (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565))
 
 /* USER CODE END PD */
 
@@ -60,6 +64,7 @@
 /*UART1 variabls*/
 char msg[80]   = "";
 char value[60] = "";
+static uint8_t buf1[VERTICAL_RES * HORIZONTAL_RES * BYTES_PER_PIXEL / 15];
 
 /* USER CODE END PV */
 
@@ -71,6 +76,60 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static lv_display_t *global_display = NULL;  // Variabile globale per il display
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
+    if (hspi->Instance == SPI3) {  // Assicurati che si tratti di SPI3
+        // Deseleziona il display (CS alto)
+        HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+
+        // Segnala a LVGL che il flush è completo
+        if (global_display != NULL) {
+            lv_display_flush_ready(global_display);
+        }
+    }
+}
+
+void my_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
+    // Imposta l'area di disegno
+    set_draw_window(area->x1, area->y1, area->x2, area->y2);
+
+    uint32_t width       = area->x2 - area->x1 + 1;
+    uint32_t height      = area->y2 - area->y1 + 1;
+    uint32_t pixel_count = width * height;
+    global_display       = display;
+    // Imposta il pin DC alto per indicare dati
+    HAL_GPIO_WritePin(DC_PORT, DC_PIN, GPIO_PIN_SET);
+
+    // Seleziona il display (CS basso)
+    HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
+
+    // Trasmette i dati a 24 bit per pixel
+    HAL_SPI_Transmit_DMA(&hspi3, px_map, pixel_count * 3);
+}
+
+void monitor_memory() {
+    lv_mem_monitor_t mem_monitor;
+    lv_mem_monitor(&mem_monitor);  // Ottieni i dati sulla memoria
+
+    // Buffer per contenere il messaggio
+    char buffer[128];
+
+    // Formatta i dati di memoria
+    snprintf(buffer,
+             sizeof(buffer),
+             "Memory total: %d bytes\r\n"
+             "Memory free: %d bytes\r\n"
+             "Memory used: %d bytes\r\n"
+             "Memory fragmentation: %d%%\r\n",
+             mem_monitor.total_size,
+             mem_monitor.free_size,
+             mem_monitor.total_size - mem_monitor.free_size,
+             mem_monitor.frag_pct);
+
+    // Trasmetti il messaggio su UART
+    HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+}
 
 /* USER CODE END 0 */
 
@@ -104,34 +163,48 @@ int main(void) {
     MX_DMA_Init();
     MX_TIM2_Init();
     MX_ADC1_Init();
-    MX_CAN1_Init();
+    // MX_CAN1_Init();
     MX_SPI3_Init();
     MX_USART1_UART_Init();
     MX_TIM7_Init();
-    //MX_IWDG_Init();
-    MX_CAN2_Init();
+    MX_IWDG_Init();
+    // MX_CAN2_Init();
     MX_DAC_Init();
     MX_I2C1_Init();
     MX_TIM3_Init();
     /* USER CODE BEGIN 2 */
+    lcd_init_spi();
+
+    lv_init();
+    lv_tick_set_cb(HAL_GetTick);
+    lv_display_t *display1 = lv_display_create(HORIZONTAL_RES, VERTICAL_RES);
+    lv_display_set_buffers(display1, buf1, NULL, sizeof(buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_flush_cb(display1, my_flush_cb);
+
+    custom_ui_init();
     // Start the counter
-    HAL_TIM_Base_Start_IT(&COUNTER_TIM);
+    // HAL_TIM_Base_Start_IT(&COUNTER_TIM);
+    // create_screen_main();
+    // lv_scr_load(objects.main);
+    // SetupDashBoard();
 
-    SetupDashBoard();
-
-    InitDashBoard();
+    // InitDashBoard();
 
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        CoreDashBoard();
+        char buffer[128];
+        snprintf(buffer, sizeof(buffer), "provaaaaa");
+        HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+        // CoreDashBoard();
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
 
         //HAL_IWDG_Refresh(&hiwdg);  // refresh watchdog ~10ms timeout
+        // lv_timer_periodic_handler();
     }
 
     /* USER CODE END 3 */

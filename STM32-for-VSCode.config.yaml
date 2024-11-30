@@ -37,6 +37,7 @@ cFlags:
   - -Wall
   - -fdata-sections
   - -ffunction-sections
+  - -I lib/lvgl/src 
 
 cxxFlags: []
 assemblyFlags: 
@@ -70,13 +71,13 @@ excludes:
 
 # Include directories (directories containing .h or .hpp files)
 # If a CubeMX makefile is present it will automatically include the include directories from that makefile.
-includeDirectories: 
-  - Inc/**
+includeDirectories:
   - Core/Inc/**
-  - Core/Lib/**
-  - Src/**
-  - Core/Src/**
-  - Core/Lib/**
+  - Lib/LVGL9/lvgl
+  - Lib/LVGL9/lvgl/src
+  - Drivers/SC24_ILI9488_DRIVER/Inc
+  - EEZ/src/ui
+  - EEZ
 
 
 # Files that should be included in the compilation.
@@ -84,10 +85,17 @@ includeDirectories:
 # Glob patterns (https://www.wikiwand.com/en/Glob_(programming)) can be used.
 # Do mind that double stars are reserved in yaml
 # these should be escaped with a: \ or the name should be in double quotes e.g. "HARDWARE_DRIVER*.c"
-sourceFiles:  
-  - Src/**
+sourceFiles:
   - Core/Src/**
-  - Core/Lib/**
+  - Lib/LVGL9/lvgl/**
+  - Lib/LVGL9/lvgl/src/**
+  - Drivers/SC24_ILI9488_DRIVER/Src/ili9488.c
+  - EEZ/screen_loader.c 
+  - EEZ/global_vars.c 
+  - EEZ/src/ui/ui.c 
+  - EEZ/src/ui/images.c 
+  - EEZ/src/ui/styles.c 
+  - EEZ/src/ui/screens.c
 
 
 # When no makefile is present it will show a warning pop-up.
