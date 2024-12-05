@@ -22,14 +22,6 @@
 #define VERTICAL_RES    320 
 #define LANDSCAPE       1
 
-// PIN settings
-#define	CS_PORT		LCD_TFT_CS_GPIO_Port
-#define CS_PIN		LCD_TFT_CS_Pin
-#define RESET_PORT	LCD_TFT_RST_GPIO_Port
-#define RESET_PIN	LCD_TFT_RST_Pin
-#define	DC_PORT		LCD_TFT_DC_GPIO_Port
-#define DC_PIN		LCD_TFT_DC_Pin
-
 // Registers (DO NOT CHANGE)
 #define ILI9488_NOP     0x00
 #define ILI9488_SWRESET 0x01
