@@ -25,7 +25,6 @@
 #include "dma.h"
 #include "gpio.h"
 #include "i2c.h"
-#include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -33,8 +32,15 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp.h"
+#include "colors.h"
 #include "dashboard.h"
+#include "global_vars.h"
+#include "ili9488.h"
+#include "log.h"
+#include "lvgl.h"
 #include "pca9555.h"
+#include "screen_loader.h"
+#include "ui.h"
 
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -46,6 +52,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define BYTES_PER_PIXEL (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565))
 
 /* USER CODE END PD */
 
@@ -60,6 +67,7 @@
 /*UART1 variabls*/
 char msg[80]   = "";
 char value[60] = "";
+static uint8_t buf1[VERTICAL_RES * HORIZONTAL_RES * BYTES_PER_PIXEL / 15];
 
 /* USER CODE END PV */
 
@@ -71,6 +79,67 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void my_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
+    // Inizia a misurare il tempo
+    uint32_t start_time = HAL_GetTick();
+
+    // Imposta l'area di disegno
+    set_draw_window(area->x1, area->y1, area->x2, area->y2);
+
+    uint32_t width       = area->x2 - area->x1 + 1;
+    uint32_t height      = area->y2 - area->y1 + 1;
+    uint32_t pixel_count = width * height;
+
+    // Imposta il pin DC alto per indicare dati
+    HAL_GPIO_WritePin(DC_PORT, DC_PIN, GPIO_PIN_SET);
+
+    // Seleziona il display (CS basso)
+    HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
+
+    // Trasmette i dati a 24 bit per pixel
+    HAL_SPI_Transmit_DMA(&hspi3, px_map, pixel_count * 3);
+
+    // Attende che la trasmissione sia completata
+    while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY)
+        ;
+
+    // Deseleziona il display (CS alto)
+    HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+
+    // Segnala a LVGL che il flush è completo
+    lv_display_flush_ready(display);
+
+    // Fine misurazione del tempo
+    uint32_t end_time = HAL_GetTick();
+
+    // Calcola e invia il tempo tramite UART
+    char msg[50];
+    sprintf(msg, "Tempo per my_flush_cb: %lu ms\r\n", (end_time - start_time));
+    // HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+}
+
+void monitor_memory() {
+    lv_mem_monitor_t mem_monitor;
+    lv_mem_monitor(&mem_monitor);  // Ottieni i dati sulla memoria
+
+    // Buffer per contenere il messaggio
+    char buffer[128];
+
+    // Formatta i dati di memoria
+    snprintf(buffer,
+             sizeof(buffer),
+             "Memory total: %d bytes\r\n"
+             "Memory free: %d bytes\r\n"
+             "Memory used: %d bytes\r\n"
+             "Memory fragmentation: %d%%\r\n",
+             mem_monitor.total_size,
+             mem_monitor.free_size,
+             mem_monitor.total_size - mem_monitor.free_size,
+             mem_monitor.frag_pct);
+
+    // Trasmetti il messaggio su UART
+    // HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+}
 
 /* USER CODE END 0 */
 
@@ -104,12 +173,11 @@ int main(void) {
     MX_DMA_Init();
     MX_TIM2_Init();
     MX_ADC1_Init();
-    MX_CAN1_Init();
+    // MX_CAN1_Init();
     MX_SPI3_Init();
     MX_USART1_UART_Init();
     MX_TIM7_Init();
-    //MX_IWDG_Init();
-    MX_CAN2_Init();
+    // MX_CAN2_Init();
     MX_DAC_Init();
     MX_I2C1_Init();
     MX_TIM3_Init();
@@ -117,23 +185,66 @@ int main(void) {
     // Start the counter
     HAL_TIM_Base_Start_IT(&COUNTER_TIM);
 
-    SetupDashBoard();
+    // SetupDashBoard();
 
-    InitDashBoard();
+    // InitDashBoard();
 
+    lcd_init_spi();
+
+    lv_init();
+    lv_tick_set_cb(HAL_GetTick);
+    lv_display_t *display1 = lv_display_create(HORIZONTAL_RES, VERTICAL_RES);
+    lv_display_set_buffers(display1, buf1, NULL, sizeof(buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_flush_cb(display1, my_flush_cb);
+#if LV_USE_LOG
+    lv_log_register_print_cb(lvgl_log_callback);
+#endif
+
+    // ui_init();
+    custom_ui_init();
+
+    monitor_memory();
+    int i = 0;
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        CoreDashBoard();
+        // CoreDashBoard();
+
+        lv_obj_t *scr_act = lv_scr_act();
+        if (scr_act != NULL) {
+            lv_obj_del(lv_scr_act());
+        }
+
+        switch ((i++) % 4) {
+            case 0:
+                create_screen_main();
+                lv_scr_load(objects.main);
+                break;
+            case 1:
+                create_screen_tires();
+                lv_scr_load(objects.tires);
+                break;
+            case 2:
+                create_screen_inverters();
+                lv_scr_load(objects.inverters);
+                break;
+            case 3:
+                create_screen_extra();
+                lv_scr_load(objects.extra);
+                break;
+        }
+
+        monitor_memory();
+
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
 
         //HAL_IWDG_Refresh(&hiwdg);  // refresh watchdog ~10ms timeout
+        lv_timer_periodic_handler();
     }
-
     /* USER CODE END 3 */
 }
 
@@ -153,9 +264,8 @@ void SystemClock_Config(void) {
     /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState       = RCC_HSE_ON;
-    RCC_OscInitStruct.LSIState       = RCC_LSI_ON;
     RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM       = 4;

@@ -5,3 +5,6 @@
 [submodule "Lib/PCA9555"]
 	path = Lib/PCA9555
 	url = https://github.com/squadracorsepolito/PCA9555.git
+[submodule "Lib/LVGL9/Lib/LVLGL9/lvgl"]
+	path = Lib/LVGL9/Lib/LVLGL9/lvgl
+	url = git@github.com:lvgl/lvgl.git
