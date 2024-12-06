@@ -25,7 +25,6 @@
 #include "dma.h"
 #include "gpio.h"
 #include "i2c.h"
-#include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -33,15 +32,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp.h"
-#include "colors.h"
 #include "dashboard.h"
-#include "global_vars.h"
-#include "ili9488.h"
-#include "log.h"
-#include "lvgl.h"
 #include "pca9555.h"
-#include "screen_loader.h"
-#include "ui.h"
 
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -53,7 +45,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define BYTES_PER_PIXEL (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB888))
 
 /* USER CODE END PD */
 
@@ -68,8 +59,6 @@
 /*UART1 variabls*/
 char msg[80]   = "";
 char value[60] = "";
-static uint8_t buf1[VERTICAL_RES * HORIZONTAL_RES * BYTES_PER_PIXEL/7];
-static volatile uint8_t flush_in_progress = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,33 +69,6 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void my_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
-    if (flush_in_progress) {
-        return;
-    }
-
-    flush_in_progress = 1;  // Imposta il flag per indicare che la trasmissione è in corso
-
-    set_draw_window(area->x1, area->y1, area->x2, area->y2);
-
-    uint32_t width = area->x2 - area->x1 + 1;
-    uint32_t height = area->y2 - area->y1 + 1;
-    uint32_t pixel_count = width * height;
-
-    HAL_GPIO_WritePin(LCD_TFT_DC_GPIO_Port, LCD_TFT_DC_Pin, GPIO_PIN_SET);  
-    HAL_GPIO_WritePin(LCD_TFT_CS_GPIO_Port, LCD_TFT_CS_Pin, GPIO_PIN_RESET); 
-
-    HAL_SPI_Transmit_DMA(&hspi3, px_map, pixel_count * 3);
-}
-
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi){
-  if (hspi->Instance == SPI3) {
-        HAL_GPIO_WritePin(LCD_TFT_CS_GPIO_Port, LCD_TFT_CS_Pin, GPIO_PIN_SET);
-        flush_in_progress = 0;  
-
-        lv_display_flush_ready(lv_disp_get_default());
-    }
-}
 
 /* USER CODE END 0 */
 
@@ -148,65 +110,24 @@ int main(void) {
     MX_DAC_Init();
     MX_I2C1_Init();
     MX_TIM3_Init();
-    MX_IWDG_Init();
     /* USER CODE BEGIN 2 */
     // Start the counter
     HAL_TIM_Base_Start_IT(&COUNTER_TIM);
 
-    // SetupDashBoard();
+    SetupDashBoard();
 
-    // InitDashBoard();
-
-    lcd_init_spi();
-
-    lv_init();
-    lv_tick_set_cb(HAL_GetTick);
-    lv_display_t *display1 = lv_display_create(HORIZONTAL_RES, VERTICAL_RES);
-    lv_display_set_buffers(display1, buf1, NULL, sizeof(buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
-    lv_display_set_flush_cb(display1, my_flush_cb);
-#if LV_USE_LOG
-    lv_log_register_print_cb(lvgl_log_callback);
-#endif
-
-    custom_ui_init();
-
-    int i = 0;
+    InitDashBoard();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        // CoreDashBoard();
-
-        lv_obj_t *scr_act = lv_scr_act();
-        if (scr_act != NULL) {
-            lv_obj_del(lv_scr_act());
-        }
-
-        switch ((i++) % 4) {
-            case 0:
-                create_screen_main();
-                lv_scr_load(objects.main);
-                break;
-            case 1:
-                create_screen_tires();
-                lv_scr_load(objects.tires);
-                break;
-            case 2:
-                create_screen_inverters();
-                lv_scr_load(objects.inverters);
-                break;
-            case 3:
-                create_screen_extra();
-                lv_scr_load(objects.extra);
-                break;
-        }
-
+        CoreDashBoard();
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
 
-        HAL_IWDG_Refresh(&hiwdg);
+        // HAL_IWDG_Refresh(&hiwdg);
         lv_timer_periodic_handler();
     }
     /* USER CODE END 3 */
@@ -228,9 +149,8 @@ void SystemClock_Config(void) {
     /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState       = RCC_HSE_ON;
-    RCC_OscInitStruct.LSIState       = RCC_LSI_ON;
     RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM       = 4;

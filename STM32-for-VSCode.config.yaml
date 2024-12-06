@@ -72,6 +72,8 @@ includeDirectories:
   - Core/Inc/**
   - Lib/LVGL9/lvgl
   - Lib/LVGL9/lvgl/src
+  - Lib/LVGL9/callback
+  - Lib/LVGL9/log
   - Drivers/SC24_ILI9488_DRIVER/Inc
   - EEZ/src/ui
   - EEZ
@@ -85,6 +87,8 @@ sourceFiles:
   - Core/Src/**
   - Lib/LVGL9/lvgl/**
   - Lib/LVGL9/lvgl/src/**
+  - Lib/LVGL9/log/log.c
+  - Lib/LVGL9/callback/callback.c
   - Drivers/SC24_ILI9488_DRIVER/Src/ili9488.c
   - EEZ/screen_loader.c 
   - EEZ/global_vars.c 

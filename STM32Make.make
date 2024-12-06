@@ -84,7 +84,6 @@ Core/Src/dashboard.c \
 Core/Src/dma.c \
 Core/Src/gpio.c \
 Core/Src/i2c.c \
-Core/Src/iwdg.c \
 Core/Src/main.c \
 Core/Src/spi.c \
 Core/Src/stm32f4xx_hal_msp.c \
@@ -113,7 +112,6 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_iwdg.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
@@ -129,6 +127,7 @@ EEZ/src/ui/images.c \
 EEZ/src/ui/screens.c \
 EEZ/src/ui/styles.c \
 EEZ/src/ui/ui.c \
+Lib/LVGL9/callback/callback.c \
 Lib/LVGL9/log/log.c \
 Lib/LVGL9/lvgl/demos/benchmark/assets/img_benchmark_avatar.c \
 Lib/LVGL9/lvgl/demos/benchmark/assets/img_benchmark_lvgl_logo_argb.c \
@@ -1029,6 +1028,7 @@ C_INCLUDES =  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IEEZ \
 -IEEZ/src/ui \
+-ILib/LVGL9/callback \
 -ILib/LVGL9/log \
 -ILib/LVGL9/lvgl \
 -ILib/LVGL9/lvgl/src \

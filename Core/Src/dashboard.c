@@ -257,7 +257,7 @@ void InitDashBoard() {
     HAL_GPIO_WritePin(AMS_ERR_LED_nCMD_GPIO_OUT_GPIO_Port, AMS_ERR_LED_nCMD_GPIO_OUT_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(IMD_ERR_LED_nCMD_GPIO_OUT_GPIO_Port, IMD_ERR_LED_nCMD_GPIO_OUT_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(RTD_LED_GPIO_Port, RTD_LED_Pin, GPIO_PIN_SET);
-    HAL_Delay(1500);
+    // HAL_Delay(1500);
 
     // Disable The SDC relay and wait later for closing it
     HAL_GPIO_WritePin(SDC_RLY_CMD_GPIO_OUT_GPIO_Port, SDC_RLY_CMD_GPIO_OUT_Pin, GPIO_PIN_SET);
@@ -275,6 +275,10 @@ void InitDashBoard() {
     //     rtd_fsm = STATE_ERROR;
     // }
 
+#ifdef USE_ILI9488
+    create_screen_main();
+    lv_scr_load(objects.main);
+#else
     char buffer[21] = {};
     sprintf(buffer, "SQUADRA CORSE POLITO");
     LCD_write(buffer);
@@ -283,9 +287,9 @@ void InitDashBoard() {
     sprintf(buffer, "     ANDROMEDA");
     LCD_write(buffer);
     HAL_Delay(1000);
+#endif
 
     btn_press_at_start = BTN_sampleStatus(BTN_Steering1);
-
 }
 
 void cock_callback() {
@@ -388,6 +392,21 @@ void SetupDashBoard(void) {
     }
     HAL_DAC_SetValue(&PUMPS_DAC, PUMPS_DAC_CHANNEL, DAC_ALIGN_8B_R, 0);
 
+#ifdef USE_ILI9488
+    lcd_init_spi();
+    lv_init();
+
+    lv_tick_set_cb(HAL_GetTick);
+    lv_display_t *display1 = lv_display_create(HORIZONTAL_RES, VERTICAL_RES);
+    lv_display_set_buffers(display1, buf1, NULL, BUFFER_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_flush_cb(display1, lvgl_flush_callback);
+
+#if LV_USE_LOG
+    lv_log_register_print_cb(lvgl_log_callback);
+#endif
+
+    custom_ui_init();
+#else
     if (PCA9555_init(&pca9555Handle, &hi2c1, PCA9555_ADDR) != HAL_OK) {
         HAL_GPIO_WritePin(WARN_LED_GPIO_OUT_GPIO_Port, WARN_LED_GPIO_OUT_Pin, GPIO_PIN_SET);
     } else {
@@ -445,6 +464,7 @@ void SetupDashBoard(void) {
     char msg[54] = {0};
     sprintf(msg, "Dashboard 2022 Boot - build %s @ %s\r\n", __DATE__, __TIME__);
     HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), 20);
+#endif
 }
 
 /*Send status data to CAN BUS*/
@@ -549,8 +569,39 @@ uint8_t AMS_detection(uint8_t ams_err_tlb,
         }                                         \
     } while (0)
 
+#ifdef USE_ILI9488
+static uint8_t i = 0;
+void LCD_DisplayUpdateRoutine(void) {
+    lv_obj_t *scr_act = lv_scr_act();
+    if (scr_act != NULL) {
+        lv_obj_del(lv_scr_act());
+    }
+
+    switch ((i++) % 4) {
+        case 0:
+            create_screen_main();
+            lv_scr_load(objects.main);
+            break;
+        case 1:
+            create_screen_tires();
+            lv_scr_load(objects.tires);
+            break;
+        case 2:
+            create_screen_inverters();
+            lv_scr_load(objects.inverters);
+            break;
+        case 3:
+            create_screen_extra();
+            lv_scr_load(objects.extra);
+            break;
+    }
+
+    lvgl_mem_usage();
+}
+
+#else
 volatile uint8_t activate_SeeYouAgain = 0;
-volatile uint8_t SeeYouAgain_running = 0;
+volatile uint8_t SeeYouAgain_running  = 0;
 
 uint8_t SeeYouAgain_Activator() {
     static uint32_t _cnt100ms            = 0;
@@ -741,6 +792,8 @@ void LCD_DisplayUpdateRoutine(void) {
     //LCD_home();
 }
 
+#endif
+
 char *see_you_again_buf[2];
 /**
     * @brief Dash main loop
@@ -789,9 +842,12 @@ void CoreDashBoard(void) {
     // RUN the ready to drive FSM
     RTD_fsm(500);
 
+#ifdef USE_ILI9488
+    LCD_DisplayUpdateRoutine();
+#else
     activate_SeeYouAgain = SeeYouAgain_Activator();
     // if we activate SeeYouAgain and pressed the button, start the procedure
-    if(activate_SeeYouAgain && btn_press_at_start == 1 && SeeYouAgain_running == 0) {
+    if (activate_SeeYouAgain && btn_press_at_start == 1 && SeeYouAgain_running == 0) {
         SeeYouAgain_running = 1;
         HAL_GPIO_WritePin(BUZZER_CMD_GPIO_OUT_GPIO_Port, BUZZER_CMD_GPIO_OUT_Pin, GPIO_PIN_SET);
         HAL_Delay(50);
@@ -809,8 +865,8 @@ void CoreDashBoard(void) {
     if (!SeeYouAgain_running)
         LCD_DisplayUpdateRoutine();
     else {
-        SeeYouAgain_running = SeeYouAgain_protocol(see_you_again_buf); // Stop running when protocol stops
-        btn_press_at_start = 0; // never let to reactivate
+        SeeYouAgain_running = SeeYouAgain_protocol(see_you_again_buf);  // Stop running when protocol stops
+        btn_press_at_start  = 0;                                        // never let to reactivate
         LCD_home();
         if (see_you_again_buf[0] == NULL) {
             LCD_write("                    ");
@@ -824,6 +880,7 @@ void CoreDashBoard(void) {
             LCD_write(see_you_again_buf[1]);
         }
     }
+#endif
 
     // Run the AS FSM
     // mission_run();
@@ -837,7 +894,6 @@ void CoreDashBoard(void) {
         error           = 0;
         boards_timeouts = 0;
     }
-
 
     // Send current state via CAN
     can_send_state(500);

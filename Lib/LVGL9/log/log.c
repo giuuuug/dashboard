@@ -64,7 +64,28 @@ void lvgl_log_callback(lv_log_level_t level, const char * buf)
 
     snprintf(log_msg, sizeof(log_msg), "%s%s\r\n", level_str, buf);
 
-    HAL_UART_Transmit(&huart2, (uint8_t*)log_msg, strlen(log_msg), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart1, (uint8_t*)log_msg, strlen(log_msg), HAL_MAX_DELAY);
 }
 
 #endif  /*LV_USE_LOG*/
+
+void lvgl_mem_usage() {
+    lv_mem_monitor_t mem_mon;
+    lv_mem_monitor(&mem_mon);
+
+    char buffer[256];
+
+      snprintf(buffer, sizeof(buffer),
+             "Memoria totale: %lu bytes\n"
+             "Memoria usata: %lu bytes\n"
+             "Memoria libera: %lu bytes\n"
+             "Percentuale usata: %d%%\n"
+             "Blocco più grande disponibile: %lu bytes\n",
+             (unsigned long)mem_mon.total_size,
+             (unsigned long)(mem_mon.total_size - mem_mon.free_size),
+             (unsigned long)mem_mon.free_size,
+             mem_mon.used_pct,
+             (unsigned long)mem_mon.free_biggest_size);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+}

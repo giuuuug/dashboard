@@ -16,42 +16,36 @@
 #ifndef _LOG_H_
 #define _LOG_H_
 
-
 /* ---------- Includes -------------------------------------------------------*/
-#include <string.h>
-#include <stdio.h>
-// #include "usart.h"
 #include "lvgl.h"
+#include "usart.h"
+
+#include <stdio.h>
+#include <string.h>
 
 /* ---------- Exported types -------------------------------------------------*/
 
-
 /* ---------- Exported constants ---------------------------------------------*/
-
 
 /* ---------- Exported variables ---------------------------------------------*/
 
-
 /* ---------- Exported macros ------------------------------------------------*/
-
 
 /* ---------- Exported functions ---------------------------------------------*/
 
-
 /* ---------- Private types --------------------------------------------------*/
-
 
 /* ---------- Private variables ----------------------------------------------*/
 
-
 /* ---------- Private constants ----------------------------------------------*/
-
 
 /* ---------- Private Macros -------------------------------------------------*/
 #if LV_USE_LOG
 
-void lvgl_log_callback(lv_log_level_t level, const char * buf);
+void lvgl_log_callback(lv_log_level_t level, const char *buf);
 
-#endif  /*LV_USE_LOG*/
+#endif /*LV_USE_LOG*/
+
+void lvgl_mem_usage();
 
 #endif
