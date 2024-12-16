@@ -8,6 +8,7 @@
 [submodule "Lib/LVGL9/lvgl"]
 	path = Lib/LVGL9/lvgl
 	url = git@github.com:lvgl/lvgl.git
-[submodule "Drivers/SC24_ILI9488_DRIVER"]
-	path = Drivers/SC24_ILI9488_DRIVER
+
+[submodule "Drivers/ILI9488_DRIVER"]
+	path = Drivers/ILI9488_DRIVER
 	url = https://github.com/giuuuug/ILI9488_DRIVER
