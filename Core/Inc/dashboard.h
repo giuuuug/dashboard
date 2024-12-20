@@ -1,9 +1,8 @@
 /*INCLUDES*/
 
 #include "bsp.h"
-#include "callback.h"
 #include "ili9488.h"
-#include "log.h"
+#include "lvgl_callbacks.h"
 #include "lvgl.h"
 #include "main.h"
 #include "screens.h"

@@ -70,11 +70,10 @@ excludes:
 # If a CubeMX makefile is present it will automatically include the include directories from that makefile.
 includeDirectories:
   - Core/Inc/**
-  - Lib/LVGL9/lvgl
-  - Lib/LVGL9/lvgl/src
-  - Lib/LVGL9/callback
-  - Lib/LVGL9/log
-  - Drivers/SC24_ILI9488_DRIVER/Inc
+  - Lib/LVGL/lvgl
+  - Lib/LVGL/lvgl/src
+  - Lib/LVGL
+  - Drivers/ILI9488
   - EEZ/src/ui
   - EEZ
 
@@ -85,11 +84,10 @@ includeDirectories:
 # these should be escaped with a: \ or the name should be in double quotes e.g. "HARDWARE_DRIVER*.c"
 sourceFiles:
   - Core/Src/**
-  - Lib/LVGL9/lvgl/**
-  - Lib/LVGL9/lvgl/src/**
-  - Lib/LVGL9/log/log.c
-  - Lib/LVGL9/callback/callback.c
-  - Drivers/SC24_ILI9488_DRIVER/Src/ili9488.c
+  - Lib/LVGL/lvgl/**
+  - Lib/LVGL/lvgl/src/**
+  - Lib/LVGL/callbacks.c
+  - Drivers/ILI9488/ili9488.c
   - EEZ/screen_loader.c 
   - EEZ/global_vars.c 
   - EEZ/src/ui/ui.c 
