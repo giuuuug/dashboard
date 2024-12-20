@@ -1,0 +1,12 @@
+[submodule "Lib/SCan"]
+	path = Lib/SCan
+	url = https://github.com/squadracorsepolito/SCan.git
+[submodule "Lib/PCA9555"]
+	path = Lib/PCA9555
+	url = https://github.com/squadracorsepolito/PCA9555.git
+[submodule "Lib/LVGL/lvgl"]
+	path = Lib/LVGL/lvgl
+	url = https://github.com/lvgl/lvgl.git
+[submodule "Drivers/ILI9488"]
+	path = Drivers/ILI9488
+	url = https://github.com/squadracorsepolito/ILI9488.git
