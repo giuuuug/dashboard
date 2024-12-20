@@ -332,10 +332,10 @@ void MCB_send_msg(uint32_t id);
 #include "spi.h"
 #include "usart.h"
 /* ---------- Exported types -------------------------------------------------*/
+
+/* ---------- Exported constants ---------------------------------------------*/
 #define LCD_TFT_SPI_Handle hspi3
 #define LCD_TFT_USART_Handle huart1
-/* ---------- Exported constants ---------------------------------------------*/
-
 /* ---------- Exported variables ---------------------------------------------*/
 
 /* ---------- Exported macros ------------------------------------------------*/

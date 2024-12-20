@@ -92,7 +92,7 @@
       ],
       "destinationFolder": "src\\ui",
       "separateFolderForImagesAndFonts": false,
-      "lvglInclude": "lvgl/lvgl.h",
+      "lvglInclude": "lvgl.h",
       "generateSourceCodeForEezFramework": false,
       "compressFlowDefinition": false,
       "executionQueueSize": 1000,
@@ -348,12 +348,13 @@
                   "checkedStateType": "literal",
                   "disabledStateType": "literal",
                   "states": "",
+                  "useStyle": "label_red",
                   "localStyles": {
                     "objID": "c2622862-f01c-4455-94c4-23657802a9f8",
                     "definition": {
                       "MAIN": {
                         "DEFAULT": {
-                          "text_color": "#d01d1d",
+                          "text_color": "#1d3dd0",
                           "text_font": "MONTSERRAT_32",
                           "text_align": "CENTER"
                         }
@@ -514,14 +515,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "f48893e6-9a03-4fe4-f4fa-6278b4c9c73b",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -566,18 +567,9 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
-                        "objID": "0c9fd775-abcc-41f3-ae42-39f1d7f24ba5",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_font": "MONTSERRAT_32",
-                              "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
-                            }
-                          }
-                        }
+                        "objID": "0c9fd775-abcc-41f3-ae42-39f1d7f24ba5"
                       },
                       "group": "",
                       "groupIndex": 0,
@@ -826,14 +818,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "000ddc4b-2d88-4d55-d8b2-3fdabf9e0de0",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -878,6 +870,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "8d1127aa-29f0-4e98-9cec-8a408c6dcd18",
                         "definition": {
@@ -885,8 +878,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1138,14 +1130,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "2c485e9c-d5e2-4239-c55a-8755afe778ca",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1190,6 +1182,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "da1e5849-ba27-4927-ba45-7beda58d7d12",
                         "definition": {
@@ -1197,8 +1190,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1450,14 +1442,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "4f673662-c5fa-41cf-b16a-7b0cda3280ca",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1502,6 +1494,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "0e4722d4-eef0-4e0b-8b6c-b2c0b9a63ece",
                         "definition": {
@@ -1509,8 +1502,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1896,14 +1888,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "d83936fd-baa0-4fb1-cd70-6f19e86cb7e5",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -1948,6 +1940,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "7ea925ad-58c9-4933-da57-568af6ff21b3",
                         "definition": {
@@ -1955,8 +1948,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2155,14 +2147,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "14e4c5aa-673f-41bf-bbcb-6bdc3b6d4dc1",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2207,6 +2199,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "8393a05f-5975-4a4f-deff-7bc305194e52",
                         "definition": {
@@ -2214,8 +2207,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2414,14 +2406,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "849b5f16-e0c5-47ea-8022-c6239eee73ec",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2466,6 +2458,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "40509ed0-31ad-4852-ee64-4ce715eafc79",
                         "definition": {
@@ -2473,8 +2466,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2673,14 +2665,14 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "fd063e4e-9587-4029-96a9-90cbf4b825ab",
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -2725,6 +2717,7 @@
                       "checkedStateType": "literal",
                       "disabledStateType": "literal",
                       "states": "",
+                      "useStyle": "label_red",
                       "localStyles": {
                         "objID": "eaa0a703-4e4c-488f-a91a-d3a76722fa8c",
                         "definition": {
@@ -2732,8 +2725,7 @@
                             "DEFAULT": {
                               "text_font": "MONTSERRAT_32",
                               "pad_left": 2,
-                              "text_align": "CENTER",
-                              "text_color": "#d01d1d"
+                              "text_align": "CENTER"
                             }
                           }
                         }
@@ -4951,6 +4943,25 @@
               "DEFAULT": {
                 "text_font": "MONTSERRAT_48",
                 "align": "CENTER"
+              }
+            }
+          }
+        }
+      },
+      {
+        "objID": "6fc7cf12-33a5-4d0d-de72-76f5103383a9",
+        "name": "label_red",
+        "forWidgetType": "LVGLLabelWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "26cb5696-f5a7-48ac-de32-ba7404681a5d",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "text_color": "#1d3dd0",
+                "text_font": "MONTSERRAT_32",
+                "pad_left": 2,
+                "text_align": "CENTER"
               }
             }
           }

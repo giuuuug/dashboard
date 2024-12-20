@@ -19,25 +19,18 @@
 /*---------- Private function prototypes -------------------------------------*/
 /*---------- Exported Variables ----------------------------------------------*/
 uint8_t buf1[BUFFER_SIZE];
-static volatile uint8_t flush_in_progress = 0;
+static volatile uint8_t flush_in_progress = 0; 
 /*---------- Exported Functions ----------------------------------------------*/
 void LVGL_CLB_flush_clb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
-    if (flush_in_progress) {
-        return;
-    }
+    if (flush_in_progress) return;
 
-    flush_in_progress = 1; 
-
-    ILI9488_set_draw_window(area->x1, area->y1, area->x2, area->y2);
-
+    flush_in_progress = 1;
     uint32_t width       = area->x2 - area->x1 + 1;
     uint32_t height      = area->y2 - area->y1 + 1;
     uint32_t pixel_count = width * height;
 
-    HAL_GPIO_WritePin(LCD_TFT_DC_GPIO_OUT_GPIO_Port, LCD_TFT_DC_GPIO_OUT_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LCD_TFT_CS_GPIO_OUT_GPIO_Port, LCD_TFT_CS_GPIO_OUT_Pin, GPIO_PIN_RESET);
-
-    HAL_SPI_Transmit_DMA(&LCD_TFT_SPI_Handle, px_map, pixel_count * 3);
+    ILI9488_set_draw_window(area->x1, area->y1, area->x2, area->y2);
+    ILI9488_SPI_DMA_send(px_map, pixel_count * 3);
 }
 
 /**
@@ -55,14 +48,12 @@ void LVGL_CLB_flush_clb(lv_display_t *display, const lv_area_t *area, uint8_t *p
  */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
     if (hspi->Instance == LCD_TFT_SPI_Handle.Instance) {
-        HAL_GPIO_WritePin(LCD_TFT_CS_GPIO_OUT_GPIO_Port, LCD_TFT_CS_GPIO_OUT_Pin, GPIO_PIN_SET);
         flush_in_progress = 0;
-
+        ILI9488_CS_set_state(GPIO_PIN_SET);
         lv_display_flush_ready(lv_disp_get_default());
     }
 }
 /*---------- Private Functions -----------------------------------------------*/
-
 
 /*---------- LCGL LOG CALLBACK ###############################################*/
 
@@ -77,9 +68,8 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
 /*---------- Exported Variables ----------------------------------------------*/
 
 /*---------- Exported Functions ----------------------------------------------*/
-void LVGL_CLB_log_clb(lv_log_level_t level, const char * buf)
-{
-   char log_msg[256];
+void LVGL_CLB_log_clb(lv_log_level_t level, const char *buf) {
+    char log_msg[256];
 
     const char *level_str;
     switch (level) {
@@ -96,14 +86,13 @@ void LVGL_CLB_log_clb(lv_log_level_t level, const char * buf)
             level_str = "ERROR: ";
             break;
         default:
-            level_str = "LOG: "; 
+            level_str = "LOG: ";
             break;
     }
 
-
     snprintf(log_msg, sizeof(log_msg), "%s%s\r\n", level_str, buf);
 
-    HAL_UART_Transmit(&LCD_TFT_USART_Handle, (uint8_t*)log_msg, strlen(log_msg), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&LCD_TFT_USART_Handle, (uint8_t *)log_msg, strlen(log_msg), HAL_MAX_DELAY);
 }
 
 void LVGL_CLB_mem_usage() {
@@ -112,7 +101,8 @@ void LVGL_CLB_mem_usage() {
 
     char buffer[256];
 
-      snprintf(buffer, sizeof(buffer),
+    snprintf(buffer,
+             sizeof(buffer),
              "Total memory: %lu bytes\n"
              "Used memory: %lu bytes\n"
              "Free memory: %lu bytes\n"
@@ -124,6 +114,6 @@ void LVGL_CLB_mem_usage() {
              mem_mon.used_pct,
              (unsigned long)mem_mon.free_biggest_size);
 
-    HAL_UART_Transmit(&LCD_TFT_USART_Handle, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&LCD_TFT_USART_Handle, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
 }
 /*---------- Private Functions -----------------------------------------------*/

@@ -1,7 +1,7 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[ILI9488.eez-project]:/userPages/2",
-    "selectedStyleObject": "[ILI9488.eez-project]:/lvglStyles/styles/0",
+    "selectedUserPageObject": "[ILI9488.eez-project]:/userPages/3",
+    "selectedStyleObject": "[ILI9488.eez-project]:/lvglStyles/styles/1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -25,7 +25,7 @@
           {
             "type": "border",
             "selected": 0,
-            "size": 240,
+            "size": 234.5,
             "location": "right",
             "children": [
               {
@@ -192,11 +192,22 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 31.430311907516028,
+              "weight": 37.925829219534066,
               "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
+                {
+                  "type": "tab",
+                  "id": "#abb73d2d-1f68-4690-a1a2-c913eda800f2",
+                  "name": "Main",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[ILI9488.eez-project]:/userPages/0",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
                 {
                   "type": "tab",
                   "id": "#c45d1ff8-d1bd-4dfd-9303-287c11e4cae0",
@@ -248,8 +259,8 @@
             {
               "type": "row",
               "id": "#1fdebd68-1bf4-46a3-977b-2af8c306a7e9",
-              "weight": 26.60077617538552,
-              "width": 347,
+              "weight": 20.105258863367457,
+              "width": 352,
               "children": [
                 {
                   "type": "tabset",
@@ -1016,8 +1027,11 @@
     "[ILI9488.eez-project]:/userPages/0[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
+          "0": {},
+          "1": {
+            "2": {
+              "$selected": true
+            }
           }
         }
       },
@@ -1036,17 +1050,22 @@
       }
     },
     "[ILI9488.eez-project]:/lvglStyles/styles[tree-state]": {
-      "0": {
-        "$selected": true
-      },
-      "1": {
-        "$selected": true
-      }
+      "0": {},
+      "1": {}
     },
     "[ILI9488.eez-project]:/userPages/1[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
+          "0": {
+            "0": {},
+            "2": {},
+            "4": {},
+            "6": {
+              "1": {
+                "$selected": true
+              }
+            }
+          }
         }
       },
       "transform": {
@@ -1083,11 +1102,16 @@
       "selection": {
         "0": {
           "0": {
-            "0": {}
+            "0": {},
+            "2": {},
+            "4": {},
+            "6": {
+              "1": {
+                "$selected": true
+              }
+            }
           },
-          "1": {
-            "$selected": true
-          }
+          "1": {}
         }
       },
       "transform": {
